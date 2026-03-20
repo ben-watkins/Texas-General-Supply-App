@@ -426,36 +426,141 @@ let scannerRunning = false;
 let orderCounter = 1000;
 
 const SAMPLE_CATALOG = [
-  { partNo:"HB-38-1",   name:"Hex Bolt 3/8\"-16 x 1\"",      description:"Grade 5 zinc plated hex bolt",       bin:"BIN-A01", unitPrice:0.18,  category:"Bolts",    uom:"EA", qtyOnHand:5000 },
-  { partNo:"HB-38-2",   name:"Hex Bolt 3/8\"-16 x 2\"",      description:"Grade 5 zinc plated hex bolt",       bin:"BIN-A02", unitPrice:0.24,  category:"Bolts",    uom:"EA", qtyOnHand:4200 },
-  { partNo:"HB-12-1",   name:"Hex Bolt 1/2\"-13 x 1\"",      description:"Grade 5 zinc plated hex bolt",       bin:"BIN-A03", unitPrice:0.32,  category:"Bolts",    uom:"EA", qtyOnHand:3800 },
-  { partNo:"HB-12-3",   name:"Hex Bolt 1/2\"-13 x 3\"",      description:"Grade 8 yellow zinc hex bolt",       bin:"BIN-A04", unitPrice:0.65,  category:"Bolts",    uom:"EA", qtyOnHand:2100 },
-  { partNo:"HB-58-2",   name:"Hex Bolt 5/8\"-11 x 2\"",      description:"Grade 5 zinc plated hex bolt",       bin:"BIN-A05", unitPrice:0.55,  category:"Bolts",    uom:"EA", qtyOnHand:2600 },
-  { partNo:"HB-34-4",   name:"Hex Bolt 3/4\"-10 x 4\"",      description:"Grade 5 zinc plated hex bolt",       bin:"BIN-A06", unitPrice:1.10,  category:"Bolts",    uom:"EA", qtyOnHand:1200 },
-  { partNo:"CB-38-1",   name:"Carriage Bolt 3/8\"-16 x 1\"",  description:"Zinc plated carriage bolt",         bin:"BIN-B01", unitPrice:0.22,  category:"Bolts",    uom:"EA", qtyOnHand:3500 },
-  { partNo:"CB-12-3",   name:"Carriage Bolt 1/2\"-13 x 3\"",  description:"Zinc plated carriage bolt",         bin:"BIN-B02", unitPrice:0.48,  category:"Bolts",    uom:"EA", qtyOnHand:2200 },
-  { partNo:"HN-38",     name:"Hex Nut 3/8\"-16",              description:"Grade 5 zinc plated hex nut",       bin:"BIN-C01", unitPrice:0.06,  category:"Nuts",     uom:"EA", qtyOnHand:12000 },
-  { partNo:"HN-12",     name:"Hex Nut 1/2\"-13",              description:"Grade 5 zinc plated hex nut",       bin:"BIN-C02", unitPrice:0.08,  category:"Nuts",     uom:"EA", qtyOnHand:10000 },
-  { partNo:"HN-58",     name:"Hex Nut 5/8\"-11",              description:"Grade 5 zinc plated hex nut",       bin:"BIN-C03", unitPrice:0.12,  category:"Nuts",     uom:"EA", qtyOnHand:7500 },
-  { partNo:"HN-34",     name:"Hex Nut 3/4\"-10",              description:"Grade 5 zinc plated hex nut",       bin:"BIN-C04", unitPrice:0.18,  category:"Nuts",     uom:"EA", qtyOnHand:5000 },
-  { partNo:"NN-38",     name:"Nylon Lock Nut 3/8\"-16",       description:"Zinc plated nylon insert lock nut", bin:"BIN-C05", unitPrice:0.10,  category:"Nuts",     uom:"EA", qtyOnHand:8000 },
-  { partNo:"NN-12",     name:"Nylon Lock Nut 1/2\"-13",       description:"Zinc plated nylon insert lock nut", bin:"BIN-C06", unitPrice:0.14,  category:"Nuts",     uom:"EA", qtyOnHand:6500 },
-  { partNo:"FW-38",     name:"Flat Washer 3/8\"",             description:"USS zinc plated flat washer",        bin:"BIN-D01", unitPrice:0.04,  category:"Washers",  uom:"EA", qtyOnHand:15000 },
-  { partNo:"FW-12",     name:"Flat Washer 1/2\"",             description:"USS zinc plated flat washer",        bin:"BIN-D02", unitPrice:0.05,  category:"Washers",  uom:"EA", qtyOnHand:14000 },
-  { partNo:"LW-38",     name:"Lock Washer 3/8\"",             description:"Zinc plated split lock washer",      bin:"BIN-D03", unitPrice:0.05,  category:"Washers",  uom:"EA", qtyOnHand:12000 },
-  { partNo:"LW-12",     name:"Lock Washer 1/2\"",             description:"Zinc plated split lock washer",      bin:"BIN-D04", unitPrice:0.06,  category:"Washers",  uom:"EA", qtyOnHand:11000 },
-  { partNo:"SS-HB-38-1",name:"SS Hex Bolt 3/8\"-16 x 1\"",   description:"18-8 Stainless steel hex bolt",      bin:"BIN-E01", unitPrice:0.52,  category:"Stainless",uom:"EA", qtyOnHand:2500 },
-  { partNo:"SS-HN-38",  name:"SS Hex Nut 3/8\"-16",           description:"18-8 Stainless steel hex nut",      bin:"BIN-E02", unitPrice:0.15,  category:"Stainless",uom:"EA", qtyOnHand:5000 },
-  { partNo:"SS-FW-38",  name:"SS Flat Washer 3/8\"",          description:"18-8 Stainless steel flat washer",   bin:"BIN-E03", unitPrice:0.10,  category:"Stainless",uom:"EA", qtyOnHand:6000 },
-  { partNo:"ANC-38-3",  name:"Wedge Anchor 3/8\" x 3\"",     description:"Zinc plated concrete wedge anchor",  bin:"BIN-F01", unitPrice:0.85,  category:"Anchors",  uom:"EA", qtyOnHand:3000 },
-  { partNo:"ANC-12-4",  name:"Wedge Anchor 1/2\" x 4\"",     description:"Zinc plated concrete wedge anchor",  bin:"BIN-F02", unitPrice:1.20,  category:"Anchors",  uom:"EA", qtyOnHand:2000 },
-  { partNo:"LAG-38-3",  name:"Lag Screw 3/8\" x 3\"",        description:"Zinc plated hex lag screw",          bin:"BIN-G01", unitPrice:0.35,  category:"Screws",   uom:"EA", qtyOnHand:4000 },
-  { partNo:"SMS-10-1",  name:"Sheet Metal Screw #10 x 1\"",  description:"Zinc plated hex washer head SMS",    bin:"BIN-G02", unitPrice:0.08,  category:"Screws",   uom:"EA", qtyOnHand:10000 },
-  { partNo:"TEK-12-1",  name:"Tek Screw #12 x 1\"",          description:"Zinc plated self-drilling tek screw",bin:"BIN-G03", unitPrice:0.09,  category:"Screws",   uom:"EA", qtyOnHand:9000 },
-  { partNo:"AROD-38-36",name:"All Thread Rod 3/8\" x 36\"",   description:"Zinc plated fully threaded rod",     bin:"BIN-H01", unitPrice:2.80,  category:"Threaded Rod",uom:"EA", qtyOnHand:500 },
-  { partNo:"AROD-12-36",name:"All Thread Rod 1/2\" x 36\"",   description:"Zinc plated fully threaded rod",     bin:"BIN-H02", unitPrice:4.20,  category:"Threaded Rod",uom:"EA", qtyOnHand:400 },
-  { partNo:"CPLT-38",   name:"Coupling Nut 3/8\"-16",        description:"Zinc plated coupling nut",           bin:"BIN-H03", unitPrice:0.45,  category:"Nuts",     uom:"EA", qtyOnHand:3000 },
-  { partNo:"UBOLT-12-3",name:"U-Bolt 1/2\" x 3\" pipe",      description:"Zinc plated U-bolt with nuts",       bin:"BIN-I01", unitPrice:1.85,  category:"Specialty",uom:"EA", qtyOnHand:1500 },
+  // Cable Ties
+  { partNo:"8-402N-100-A", name:"9/64\"X5.5\" Cable Ties-Natural",  description:"Natural cable ties",             bin:"BIN-8-402", unitPrice:4.64,  category:"Cable Ties",    uom:"PK", qtyOnHand:100 },
+  { partNo:"8-403N-100-A", name:"3/16\"X7.5\" Cable Ties-Natural",  description:"Natural cable ties",             bin:"BIN-8-403", unitPrice:7.80,  category:"Cable Ties",    uom:"PK", qtyOnHand:100 },
+  { partNo:"8-405N-100-A", name:"3/16\"X11.5\" Cable Ties-Natural", description:"Natural cable ties",             bin:"BIN-8-405", unitPrice:12.46, category:"Cable Ties",    uom:"PK", qtyOnHand:80 },
+  { partNo:"8-424N-50-A",  name:"5/16\"X24\" Cable Ties-Natural",   description:"Natural cable ties",             bin:"BIN-8-424", unitPrice:59.80, category:"Cable Ties",    uom:"PK", qtyOnHand:50 },
+
+  // Drill Bits - Super Premium
+  { partNo:"14-504-1-A", name:"1/16 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-504", unitPrice:2.42,  category:"Drill Bits",   uom:"EA", qtyOnHand:200 },
+  { partNo:"14-505-1-A", name:"5/64 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-505", unitPrice:2.45,  category:"Drill Bits",   uom:"EA", qtyOnHand:200 },
+  { partNo:"14-506-1-A", name:"3/32 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-506", unitPrice:2.45,  category:"Drill Bits",   uom:"EA", qtyOnHand:200 },
+  { partNo:"14-507-1-A", name:"7/64 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-507", unitPrice:2.60,  category:"Drill Bits",   uom:"EA", qtyOnHand:200 },
+  { partNo:"14-508-1-A", name:"1/8 Super Premium Drill Bit",     description:"Super premium drill bit",         bin:"BIN-14-508", unitPrice:3.03,  category:"Drill Bits",   uom:"EA", qtyOnHand:150 },
+  { partNo:"14-509-1-A", name:"9/64 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-509", unitPrice:3.07,  category:"Drill Bits",   uom:"EA", qtyOnHand:150 },
+  { partNo:"14-510-1-A", name:"5/32 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-510", unitPrice:3.22,  category:"Drill Bits",   uom:"EA", qtyOnHand:150 },
+  { partNo:"14-511-1-A", name:"11/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-511", unitPrice:3.26,  category:"Drill Bits",   uom:"EA", qtyOnHand:100 },
+  { partNo:"14-512-1-A", name:"3/16 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-512", unitPrice:3.96,  category:"Drill Bits",   uom:"EA", qtyOnHand:150 },
+  { partNo:"14-513-1-A", name:"13/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-513", unitPrice:4.41,  category:"Drill Bits",   uom:"EA", qtyOnHand:100 },
+  { partNo:"14-514-1-A", name:"7/32 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-514", unitPrice:4.68,  category:"Drill Bits",   uom:"EA", qtyOnHand:100 },
+  { partNo:"14-515-1-A", name:"15/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-515", unitPrice:5.00,  category:"Drill Bits",   uom:"EA", qtyOnHand:100 },
+  { partNo:"14-516-1-A", name:"1/4 Super Premium Drill Bit",     description:"Super premium drill bit",         bin:"BIN-14-516", unitPrice:5.27,  category:"Drill Bits",   uom:"EA", qtyOnHand:100 },
+  { partNo:"14-518-1-A", name:"9/32 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-518", unitPrice:6.88,  category:"Drill Bits",   uom:"EA", qtyOnHand:80 },
+  { partNo:"14-520-1-A", name:"5/16 Super Premium Drill Bit",    description:"Super premium drill bit",         bin:"BIN-14-520", unitPrice:8.32,  category:"Drill Bits",   uom:"EA", qtyOnHand:80 },
+  { partNo:"14-521-1-A", name:"21/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-521", unitPrice:8.93,  category:"Drill Bits",   uom:"EA", qtyOnHand:60 },
+  { partNo:"14-522-1-A", name:"11/32 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-522", unitPrice:10.24, category:"Drill Bits",   uom:"EA", qtyOnHand:60 },
+  { partNo:"14-523-1-A", name:"23/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-523", unitPrice:11.16, category:"Drill Bits",   uom:"EA", qtyOnHand:60 },
+  { partNo:"14-524-1-A", name:"3/8 Super Premium Drill Bit",     description:"Super premium drill bit",         bin:"BIN-14-524", unitPrice:11.85, category:"Drill Bits",   uom:"EA", qtyOnHand:80 },
+  { partNo:"14-525-1-A", name:"25/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-525", unitPrice:13.21, category:"Drill Bits",   uom:"EA", qtyOnHand:40 },
+  { partNo:"14-526-1-A", name:"13/32 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-526", unitPrice:13.63, category:"Drill Bits",   uom:"EA", qtyOnHand:40 },
+  { partNo:"14-527-1-A", name:"27/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-527", unitPrice:12.91, category:"Drill Bits",   uom:"EA", qtyOnHand:40 },
+  { partNo:"14-529-1-A", name:"29/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-529", unitPrice:16.63, category:"Drill Bits",   uom:"EA", qtyOnHand:30 },
+  { partNo:"14-530-1-A", name:"15/32 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-530", unitPrice:18.78, category:"Drill Bits",   uom:"EA", qtyOnHand:30 },
+  { partNo:"14-531-1-A", name:"31/64 Super Premium Drill Bit",   description:"Super premium drill bit",         bin:"BIN-14-531", unitPrice:19.75, category:"Drill Bits",   uom:"EA", qtyOnHand:30 },
+  { partNo:"14-532-1-A", name:"1/2 Super Premium Drill Bit",     description:"Super premium drill bit",         bin:"BIN-14-532", unitPrice:20.10, category:"Drill Bits",   uom:"EA", qtyOnHand:50 },
+  { partNo:"14-167-1-A", name:"5/8-GP HSS-1/2\" Shank Bit",      description:"General purpose HSS shank bit",   bin:"BIN-14-167", unitPrice:48.43, category:"Drill Bits",   uom:"EA", qtyOnHand:20 },
+
+  // Taps
+  { partNo:"14-856-1-A", name:"3/8-16 Bottoming Tap",            description:"Bottoming tap",                   bin:"BIN-14-856", unitPrice:19.23, category:"Taps",         uom:"EA", qtyOnHand:30 },
+
+  // Brushes
+  { partNo:"11-145-25-A", name:"6\" 3/8\" Tin Handle Acid Brush",       description:"Tin handle acid brush",    bin:"BIN-11-145", unitPrice:6.59,  category:"Brushes",      uom:"EA", qtyOnHand:100 },
+  { partNo:"11-149-6-A",  name:"Plastic Handle Toothbrush, SS",         description:"Stainless steel bristle",  bin:"BIN-11-149", unitPrice:11.17, category:"Brushes",      uom:"EA", qtyOnHand:50 },
+  { partNo:"11-151-2-A",  name:"Shoe Handle Brush, 4 Row SS",           description:"Stainless steel 4 row",   bin:"BIN-11-151", unitPrice:12.54, category:"Brushes",      uom:"EA", qtyOnHand:40 },
+
+  // Nuts SS
+  { partNo:"9-S8002-100", name:"5/16-18 USS Nuts SS",            description:"Stainless steel USS nut",         bin:"BIN-9-S80A", unitPrice:8.59,  category:"SS Nuts",      uom:"PK", qtyOnHand:100 },
+  { partNo:"15-801-1-A",  name:"1/2 USS Nuts SS",                description:"Stainless steel USS nut",         bin:"BIN-15-801A",unitPrice:6.10,  category:"SS Nuts",      uom:"PK", qtyOnHand:80 },
+  { partNo:"9-S8007-030", name:"5/8-11 USS Nuts SS",             description:"Stainless steel USS nut",         bin:"BIN-9-S80B", unitPrice:15.68, category:"SS Nuts",      uom:"PK", qtyOnHand:60 },
+  { partNo:"15-803-1-B",  name:"7/8 USS Nuts SS",                description:"Stainless steel USS nut",         bin:"BIN-15-803B",unitPrice:12.20, category:"SS Nuts",      uom:"PK", qtyOnHand:40 },
+
+  // Flat Washers SS
+  { partNo:"9-S8028-100", name:"5/16 FW USS SS",                 description:"Stainless steel flat washer",     bin:"BIN-9-S82A", unitPrice:5.66,  category:"SS Washers",   uom:"PK", qtyOnHand:100 },
+  { partNo:"9-S8029-100", name:"3/8 FW USS SS",                  description:"Stainless steel flat washer",     bin:"BIN-9-S82B", unitPrice:7.04,  category:"SS Washers",   uom:"PK", qtyOnHand:100 },
+  { partNo:"9-S8030-050", name:"7/16 FW USS SS",                 description:"Stainless steel flat washer",     bin:"BIN-9-S82C", unitPrice:7.54,  category:"SS Washers",   uom:"PK", qtyOnHand:80 },
+  { partNo:"9-S8031-050", name:"1/2 FW USS SS",                  description:"Stainless steel flat washer",     bin:"BIN-9-S82D", unitPrice:8.19,  category:"SS Washers",   uom:"PK", qtyOnHand:80 },
+  { partNo:"15-804-1-B",  name:"7/8 FW SS",                      description:"Stainless steel flat washer",     bin:"BIN-15-804B",unitPrice:8.40,  category:"SS Washers",   uom:"PK", qtyOnHand:40 },
+  { partNo:"15-813-1-B",  name:"5/16 X 1 1/2 Fender Washer SS",  description:"Stainless steel fender washer",   bin:"BIN-15-813B",unitPrice:10.03, category:"SS Washers",   uom:"PK", qtyOnHand:50 },
+
+  // Hex Bolts SS
+  { partNo:"9-S8042-050", name:"1/4 X 3/4 HB USS SS",            description:"Stainless steel hex bolt",        bin:"BIN-9-S84A", unitPrice:6.54,  category:"SS Hex Bolts", uom:"PK", qtyOnHand:80 },
+  { partNo:"9-S8044-050", name:"1/4 X 1 1/4 HB USS SS",          description:"Stainless steel hex bolt",        bin:"BIN-9-S84B", unitPrice:9.00,  category:"SS Hex Bolts", uom:"PK", qtyOnHand:60 },
+  { partNo:"15-802-1-B",  name:"1/4 X 3 HB USS SS",              description:"Stainless steel hex bolt",        bin:"BIN-15-802B",unitPrice:4.05,  category:"SS Hex Bolts", uom:"PK", qtyOnHand:50 },
+  { partNo:"9-S8088-025", name:"3/8 X 3 1/2 HB USS SS",          description:"Stainless steel hex bolt",        bin:"BIN-9-S88A", unitPrice:20.80, category:"SS Hex Bolts", uom:"PK", qtyOnHand:40 },
+  { partNo:"9-S8135-012", name:"9/16 X 2 HB USS SS",             description:"Stainless steel hex bolt",        bin:"BIN-9-S81A", unitPrice:20.96, category:"SS Hex Bolts", uom:"PK", qtyOnHand:30 },
+  { partNo:"15-805-1-B",  name:"5/8 X 3 HB USS SS",              description:"Stainless steel hex bolt",        bin:"BIN-15-805B",unitPrice:8.28,  category:"SS Hex Bolts", uom:"PK", qtyOnHand:30 },
+
+  // Metric Bolts SS
+  { partNo:"15-806-1-B", name:"M8 X 16 HB SS",                   description:"Stainless steel metric hex bolt", bin:"BIN-15-806B",unitPrice:13.12, category:"SS Metric",    uom:"PK", qtyOnHand:40 },
+  { partNo:"15-807-1-B", name:"M16 X 60 HB SS",                  description:"Stainless steel metric hex bolt", bin:"BIN-15-807B",unitPrice:19.54, category:"SS Metric",    uom:"PK", qtyOnHand:20 },
+  { partNo:"15-808-1-B", name:"M18 X 40 HB SS",                  description:"Stainless steel metric hex bolt", bin:"BIN-15-808B",unitPrice:18.12, category:"SS Metric",    uom:"PK", qtyOnHand:20 },
+  { partNo:"15-809-1-B", name:"M5 X 12 HB SS",                   description:"Stainless steel metric hex bolt", bin:"BIN-15-809B",unitPrice:13.89, category:"SS Metric",    uom:"PK", qtyOnHand:40 },
+  { partNo:"15-810-1-B", name:"M8 X 30 SHCS SS",                 description:"Stainless steel socket head cap screw", bin:"BIN-15-810B",unitPrice:10.21, category:"SS Metric", uom:"PK", qtyOnHand:40 },
+
+  // Keystock
+  { partNo:"15-811-1-B", name:"3/8 Keystock SS",                 description:"Stainless steel keystock",        bin:"BIN-15-811B",unitPrice:29.04, category:"Keystock",     uom:"EA", qtyOnHand:30 },
+
+  // Hose Fittings
+  { partNo:"6-HB68-8-6", name:"1/2\"X3/8\" Hose to MPT Male Connector", description:"Hose barb to male pipe thread", bin:"BIN-6-HB68A", unitPrice:12.10, category:"Hose Fittings", uom:"EA", qtyOnHand:50 },
+  { partNo:"6-HB68-6-4", name:"3/8\"X1/4\" Hose to MPT Male Connector", description:"Hose barb to male pipe thread", bin:"BIN-6-HB68B", unitPrice:5.35,  category:"Hose Fittings", uom:"EA", qtyOnHand:50 },
+
+  // Zerks
+  { partNo:"5-531L-12-A", name:"1/8 Pipe Thread Long 1-1/4\" Zerk", description:"Grease zerk fitting",         bin:"BIN-5-531", unitPrice:25.14, category:"Zerks",        uom:"PK", qtyOnHand:60 },
+
+  // Electrical Terminals & Wire Nuts
+  { partNo:"8-63N-50-A",  name:"16-14ga Nylon Male Push On Terminals",   description:"Nylon insulated terminal", bin:"BIN-8-63N", unitPrice:11.93, category:"Electrical",   uom:"PK", qtyOnHand:100 },
+  { partNo:"8-61N-50-A",  name:"16-14ga Nylon Female Push On Terminals", description:"Nylon insulated terminal", bin:"BIN-8-61N", unitPrice:11.93, category:"Electrical",   uom:"PK", qtyOnHand:100 },
+  { partNo:"8-16N-50-A",  name:"22-18ga Nylon Male Push On Terminal",    description:"Nylon insulated terminal", bin:"BIN-8-16N", unitPrice:10.25, category:"Electrical",   uom:"PK", qtyOnHand:80 },
+  { partNo:"15-812-1-B",  name:"Sm. Blue Wire Nuts",                     description:"Small blue wire nuts",     bin:"BIN-15-812B",unitPrice:5.03, category:"Electrical",   uom:"PK", qtyOnHand:100 },
+  { partNo:"8-702-100-A", name:"Orange Wire Nut 2 #14ga",                description:"Orange wire nut",          bin:"BIN-8-702", unitPrice:7.94,  category:"Electrical",   uom:"PK", qtyOnHand:100 },
+  { partNo:"8-708-50-A",  name:"Yellow Wing Wire Nut",                   description:"Yellow wing wire nut",     bin:"BIN-8-708", unitPrice:10.25, category:"Electrical",   uom:"PK", qtyOnHand:80 },
+  { partNo:"8-710-30-A",  name:"Red Wing Wire Nut",                      description:"Red wing wire nut",        bin:"BIN-8-710", unitPrice:11.08, category:"Electrical",   uom:"PK", qtyOnHand:60 },
+
+  // Tek Screws SS
+  { partNo:"9-5870-100-A", name:"8 X 1/2 TEK HW SS",             description:"Stainless steel tek screw hex washer", bin:"BIN-9-587A", unitPrice:7.94,  category:"SS Tek Screws", uom:"PK", qtyOnHand:100 },
+  { partNo:"9-5872-100-A", name:"8 X 3/4 TEK HW SS",             description:"Stainless steel tek screw hex washer", bin:"BIN-9-587B", unitPrice:8.27,  category:"SS Tek Screws", uom:"PK", qtyOnHand:100 },
+  { partNo:"9-5874-100-A", name:"8 X 1 TEK HW SS",               description:"Stainless steel tek screw hex washer", bin:"BIN-9-587C", unitPrice:11.47, category:"SS Tek Screws", uom:"PK", qtyOnHand:80 },
+  { partNo:"9-5876-50-A",  name:"10 X 3/4 TEK HW SS",            description:"Stainless steel tek screw hex washer", bin:"BIN-9-587D", unitPrice:12.07, category:"SS Tek Screws", uom:"PK", qtyOnHand:80 },
+  { partNo:"9-5884-50-A",  name:"12 X 3/4 TEK HW SS",            description:"Stainless steel tek screw hex washer", bin:"BIN-9-588A", unitPrice:15.70, category:"SS Tek Screws", uom:"PK", qtyOnHand:60 },
+  { partNo:"9-5886-50-A",  name:"12 X 1 TEK HW SS",              description:"Stainless steel tek screw hex washer", bin:"BIN-9-588B", unitPrice:18.27, category:"SS Tek Screws", uom:"PK", qtyOnHand:60 },
+
+  // Hose Clamps
+  { partNo:"4-012AS-10-A", name:"Hose Clamp 9/16\" to 1 1/4\"",   description:"Stainless steel hose clamp",    bin:"BIN-4-012", unitPrice:21.25, category:"Hose Clamps",  uom:"PK", qtyOnHand:50 },
+  { partNo:"4-032AS-10-A", name:"Hose Clamp 1 9/16\" to 2 1/2\"", description:"Stainless steel hose clamp",    bin:"BIN-4-032", unitPrice:26.56, category:"Hose Clamps",  uom:"PK", qtyOnHand:50 },
+  { partNo:"4-072AS-10-A", name:"Hose Clamp 4 1/16\" to 5\"",     description:"Stainless steel hose clamp",    bin:"BIN-4-072", unitPrice:36.54, category:"Hose Clamps",  uom:"PK", qtyOnHand:30 },
+
+  // SS Pipe Fittings
+  { partNo:"15-814-1-B", name:"1/4 Coupling SS Pipe",             description:"Stainless steel pipe coupling",  bin:"BIN-15-814B",unitPrice:3.29,  category:"SS Pipe",      uom:"EA", qtyOnHand:200 },
+  { partNo:"15-815-1-B", name:"1/4 X 1 1/2 Nipple SS Pipe",      description:"Stainless steel pipe nipple",    bin:"BIN-15-815B",unitPrice:3.97,  category:"SS Pipe",      uom:"EA", qtyOnHand:200 },
+  { partNo:"15-816-1-B", name:"1/4 90 Elbow SS Pipe",             description:"Stainless steel 90 elbow",      bin:"BIN-15-816B",unitPrice:6.96,  category:"SS Pipe",      uom:"EA", qtyOnHand:150 },
+  { partNo:"15-800-1-B", name:"1/2 Coupling SS Pipe",             description:"Stainless steel pipe coupling",  bin:"BIN-15-800B",unitPrice:6.02,  category:"SS Pipe",      uom:"EA", qtyOnHand:100 },
+  { partNo:"15-801-1-B", name:"1/2 Tees SS Pipe",                 description:"Stainless steel pipe tee",       bin:"BIN-15-801B",unitPrice:10.20, category:"SS Pipe",      uom:"EA", qtyOnHand:80 },
+  { partNo:"15-802-1-B2",name:"1 1/2 90 St. Elbow SS Pipe",       description:"Stainless steel 90 street elbow",bin:"BIN-15-802C",unitPrice:36.10, category:"SS Pipe",      uom:"EA", qtyOnHand:20 },
+  { partNo:"15-803-1-B2",name:"1/8 Close Nipple SS Pipe",         description:"Stainless steel close nipple",   bin:"BIN-15-803C",unitPrice:1.95,  category:"SS Pipe",      uom:"EA", qtyOnHand:200 },
+  { partNo:"15-804-1-B2",name:"1/8 X 2 Nipple SS Pipe",           description:"Stainless steel pipe nipple",    bin:"BIN-15-804C",unitPrice:2.28,  category:"SS Pipe",      uom:"EA", qtyOnHand:150 },
+  { partNo:"15-805-1-B2",name:"1/4 Close Nipple SS Pipe",         description:"Stainless steel close nipple",   bin:"BIN-15-805C",unitPrice:2.19,  category:"SS Pipe",      uom:"EA", qtyOnHand:200 },
+  { partNo:"15-806-1-B2",name:"1/4 X 1 1/2 Nipple SS Pipe",      description:"Stainless steel pipe nipple",    bin:"BIN-15-806C",unitPrice:2.69,  category:"SS Pipe",      uom:"EA", qtyOnHand:150 },
+  { partNo:"15-807-1-B2",name:"3/8 Close Nipple SS Pipe",         description:"Stainless steel close nipple",   bin:"BIN-15-807C",unitPrice:2.28,  category:"SS Pipe",      uom:"EA", qtyOnHand:200 },
+  { partNo:"15-808-1-B2",name:"1/2 Close Nipple SS Pipe",         description:"Stainless steel close nipple",   bin:"BIN-15-808C",unitPrice:3.96,  category:"SS Pipe",      uom:"EA", qtyOnHand:200 },
+  { partNo:"15-809-1-B2",name:"1/2 X 2 Nipple SS Pipe",           description:"Stainless steel pipe nipple",    bin:"BIN-15-809C",unitPrice:5.68,  category:"SS Pipe",      uom:"EA", qtyOnHand:150 },
+  { partNo:"15-810-1-B2",name:"1/2 X 3 Nipple SS Pipe",           description:"Stainless steel pipe nipple",    bin:"BIN-15-810C",unitPrice:6.39,  category:"SS Pipe",      uom:"EA", qtyOnHand:100 },
+  { partNo:"15-811-1-B2",name:"1\" Close Nipple SS Pipe",         description:"Stainless steel close nipple",   bin:"BIN-15-811C",unitPrice:4.78,  category:"SS Pipe",      uom:"EA", qtyOnHand:100 },
+  { partNo:"15-812-1-B2",name:"1 1/2 X 1 1/4 Hex Bushing SS Pipe",description:"Stainless steel hex bushing",   bin:"BIN-15-812C",unitPrice:16.30, category:"SS Pipe",      uom:"EA", qtyOnHand:40 },
+  { partNo:"15-813-1-B2",name:"3/8 X 1/4 Bell Reducer SS Pipe",   description:"Stainless steel bell reducer",  bin:"BIN-15-813C",unitPrice:6.24,  category:"SS Pipe",      uom:"EA", qtyOnHand:60 },
+  { partNo:"15-814-1-B2",name:"3\" Close Nipple SS Pipe",         description:"Stainless steel close nipple",   bin:"BIN-15-814C",unitPrice:26.82, category:"SS Pipe",      uom:"EA", qtyOnHand:20 },
+  { partNo:"15-815-1-B2",name:"2 X 4 Nipple SS Pipe",             description:"Stainless steel pipe nipple",    bin:"BIN-15-815C",unitPrice:22.83, category:"SS Pipe",      uom:"EA", qtyOnHand:30 },
+  { partNo:"15-816-1-B2",name:"2 X 6 Nipple SS Pipe",             description:"Stainless steel pipe nipple",    bin:"BIN-15-816C",unitPrice:42.88, category:"SS Pipe",      uom:"EA", qtyOnHand:20 },
+  { partNo:"15-817-1-B", name:"2\" Coupling SS Pipe",             description:"Stainless steel pipe coupling",  bin:"BIN-15-817B",unitPrice:36.86, category:"SS Pipe",      uom:"EA", qtyOnHand:20 },
+  { partNo:"15-801-1-B2",name:"2 X 3/8 Bell Reducer SS Pipe",     description:"Stainless steel bell reducer",  bin:"BIN-15-801C",unitPrice:32.32, category:"SS Pipe",      uom:"EA", qtyOnHand:20 },
+  { partNo:"15-802-1-B3",name:"2 X 1 1/2 Bell Reducer SS Pipe",   description:"Stainless steel bell reducer",  bin:"BIN-15-802D",unitPrice:34.03, category:"SS Pipe",      uom:"EA", qtyOnHand:20 },
+
+  // Ball Valves SS
+  { partNo:"15-803-1-B3",name:"1/2 Ball Valve 316 SS",            description:"316 stainless steel ball valve",  bin:"BIN-15-803D",unitPrice:38.68, category:"SS Valves",    uom:"EA", qtyOnHand:40 },
+  { partNo:"15-804-1-B3",name:"3/4 Ball Valve 316 SS",            description:"316 stainless steel ball valve",  bin:"BIN-15-804D",unitPrice:61.44, category:"SS Valves",    uom:"EA", qtyOnHand:30 },
+
+  // Pen Light Tester
+  { partNo:"15-800-1-B2",name:"Pen Light Tester",                 description:"Electrical pen light tester",    bin:"BIN-15-800C",unitPrice:59.40, category:"Tools",        uom:"EA", qtyOnHand:20 },
 ];
 
 function loadSampleCatalog() {
