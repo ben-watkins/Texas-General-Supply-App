@@ -122,6 +122,42 @@ tr:hover { background: #f8f9fa; }
 .modal h2 { margin-bottom: 16px; }
 .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
 
+/* MOBILE */
+@media (max-width: 600px) {
+  .topbar { flex-direction: column; gap: 8px; padding: 10px 12px; }
+  .topbar h1 { font-size: 18px; }
+  .nav-tabs { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 2px; }
+  .nav-tab { padding: 8px 10px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+  .page { padding: 12px 8px; }
+  label { font-size: 13px; }
+  input, select, textarea { font-size: 16px; padding: 12px; }
+  .btn { padding: 12px 16px; font-size: 14px; }
+  .btn-sm { padding: 8px 12px; font-size: 13px; }
+  .qty-input { width: 60px; padding: 10px 6px; font-size: 16px; }
+  .remove-btn { font-size: 22px; padding: 10px; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  table { font-size: 12px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  thead { font-size: 10px; }
+  th, td { padding: 8px 6px; white-space: nowrap; }
+  .modal { width: 95%; padding: 16px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .card { padding: 14px; margin-bottom: 10px; }
+  .card h2 { font-size: 15px; }
+  .catalog-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .catalog-item { padding: 10px; }
+  .toast { left: 12px; right: 12px; bottom: 12px; text-align: center; }
+  .form-inline { flex-wrap: wrap; }
+  .summary-row.total { font-size: 16px; }
+}
+
+/* Touch-friendly hover states */
+@media (hover: none) {
+  .btn:hover { transform: none; box-shadow: none; }
+  .btn:active { transform: scale(0.97); }
+  .catalog-item:hover { border-color: var(--border); box-shadow: none; }
+  .catalog-item:active { border-color: var(--primary-light); }
+  tr:hover { background: inherit; }
+}
+
 /* PRINT */
 @media print {
   .topbar, .nav-tabs, .btn-group, .no-print { display: none !important; }
@@ -1030,17 +1066,17 @@ init();
 </script>
 
 <!-- PWA Install Banner -->
-<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1a5276,#2980b9);color:#fff;padding:14px 20px;z-index:300;align-items:center;justify-content:space-between;box-shadow:0 -2px 12px rgba(0,0,0,.2)">
-  <div style="display:flex;align-items:center;gap:12px">
-    <img src="icons/icon-192.png" alt="FastBolt" style="width:40px;height:40px;border-radius:8px">
-    <div>
+<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1a5276,#2980b9);color:#fff;padding:14px 16px;z-index:300;align-items:center;justify-content:space-between;box-shadow:0 -2px 12px rgba(0,0,0,.2);flex-wrap:wrap;gap:10px">
+  <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+    <img src="icons/icon-192.png" alt="FastBolt" style="width:44px;height:44px;border-radius:8px;flex-shrink:0">
+    <div style="min-width:0">
       <div style="font-weight:700;font-size:15px">Install FastBolt</div>
-      <div style="font-size:12px;opacity:.85">Add to your home screen for quick access — works offline!</div>
+      <div style="font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Add to home screen — works offline!</div>
     </div>
   </div>
-  <div style="display:flex;gap:8px">
-    <button onclick="installApp()" style="background:#e67e22;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px">Install</button>
-    <button onclick="dismissInstall()" style="background:rgba(255,255,255,.15);color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer;font-size:13px">Not now</button>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button onclick="installApp()" style="background:#e67e22;color:#fff;border:none;padding:12px 20px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;min-height:44px">Install</button>
+    <button onclick="dismissInstall()" style="background:rgba(255,255,255,.15);color:#fff;border:none;padding:12px 14px;border-radius:6px;cursor:pointer;font-size:13px;min-height:44px">Not now</button>
   </div>
 </div>
 
