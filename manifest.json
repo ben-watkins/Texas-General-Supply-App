@@ -4,8 +4,8 @@
   "description": "Nuts & bolts distributor app with bin scanning, quotes, invoices, and packing slips",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f6f8",
-  "theme_color": "#1a5276",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "any",
   "categories": ["business", "utilities"],
   "icons": [

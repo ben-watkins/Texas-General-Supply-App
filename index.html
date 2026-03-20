@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FastBolt — Distributor Order System</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a5276">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="FastBolt">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -15,34 +15,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root {
-  --primary: #1a5276;
-  --primary-light: #2980b9;
-  --accent: #e67e22;
+  --primary: #c0392b;
+  --primary-light: #e74c3c;
+  --accent: #a93226;
   --success: #27ae60;
-  --danger: #c0392b;
-  --bg: #f4f6f8;
+  --danger: #922b21;
+  --bg: #ffffff;
   --card: #ffffff;
-  --text: #2c3e50;
-  --text-muted: #7f8c8d;
-  --border: #dfe6e9;
+  --text: #c0392b;
+  --text-muted: #e74c3c;
+  --border: #f5c6cb;
   --radius: 10px;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); }
 
 /* NAV */
-.topbar { background: var(--primary); color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.topbar { background: #ffffff; color: var(--primary); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(192,57,43,.12); border-bottom: 3px solid var(--primary); }
 .topbar h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
-.topbar h1 span { color: var(--accent); }
+.topbar h1 span { color: var(--primary); }
+.topbar-logo { height: 32px; width: auto; margin-right: 4px; }
 .nav-tabs { display: flex; gap: 4px; }
-.nav-tab { background: rgba(255,255,255,.12); border: none; color: #fff; padding: 8px 16px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 13px; font-weight: 600; transition: .2s; }
-.nav-tab:hover { background: rgba(255,255,255,.25); }
-.nav-tab.active { background: var(--bg); color: var(--primary); }
+.nav-tab { background: transparent; border: none; color: var(--primary); padding: 8px 16px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 13px; font-weight: 600; transition: .2s; opacity: .6; }
+.nav-tab:hover { background: rgba(192,57,43,.08); opacity: 1; }
+.nav-tab.active { background: rgba(192,57,43,.12); color: var(--primary); opacity: 1; }
 
 /* LAYOUT */
 .page { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; }
 .page.active { display: block; }
-.card { background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.card { background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(192,57,43,.08); border: 1px solid #f5c6cb; }
 .card h2 { font-size: 16px; margin-bottom: 12px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
@@ -50,7 +51,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 /* FORMS */
 label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 4px; }
 input, select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; transition: .2s; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(41,128,185,.12); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(192,57,43,.12); }
 .form-row { margin-bottom: 12px; }
 .form-inline { display: flex; gap: 8px; align-items: flex-end; }
 .form-inline .form-row { flex: 1; }
@@ -68,9 +69,9 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 
 /* TABLE */
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { background: var(--primary); color: #fff; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+th { background: #c0392b; color: #fff; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
 td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-tr:hover { background: #f8f9fa; }
+tr:hover { background: #fdecea; }
 .qty-input { width: 70px; text-align: center; padding: 6px; }
 .price-col { text-align: right; }
 .remove-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 18px; padding: 4px; }
@@ -78,14 +79,14 @@ tr:hover { background: #f8f9fa; }
 /* SCANNER */
 #scanner-container { width: 100%; max-width: 400px; margin: 0 auto; border-radius: var(--radius); overflow: hidden; }
 #reader { width: 100%; }
-.scan-result { background: #d5f5e3; border: 2px solid var(--success); border-radius: var(--radius); padding: 12px; margin-top: 12px; display: none; }
+.scan-result { background: #fdecea; border: 2px solid var(--primary); border-radius: var(--radius); padding: 12px; margin-top: 12px; display: none; }
 .scan-result.show { display: flex; align-items: center; gap: 12px; }
 
 /* BADGE */
 .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
-.badge-blue { background: #dbeafe; color: #1e40af; }
+.badge-blue { background: #fdecea; color: #c0392b; }
 .badge-green { background: #d1fae5; color: #065f46; }
-.badge-orange { background: #ffedd5; color: #9a3412; }
+.badge-orange { background: #fdecea; color: #922b21; }
 
 /* ORDER SUMMARY */
 .summary-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
@@ -169,7 +170,7 @@ tr:hover { background: #f8f9fa; }
 <body>
 
 <div class="topbar">
-  <h1>⚙️ Fast<span>Bolt</span></h1>
+  <h1><img src="icons/texas-outline.svg" alt="Texas" class="topbar-logo"> Fast<span>Bolt</span></h1>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('scan')">📷 Scan</button>
     <button class="nav-tab" onclick="showPage('catalog')">📦 Catalog</button>
@@ -1066,17 +1067,17 @@ init();
 </script>
 
 <!-- PWA Install Banner -->
-<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1a5276,#2980b9);color:#fff;padding:14px 16px;z-index:300;align-items:center;justify-content:space-between;box-shadow:0 -2px 12px rgba(0,0,0,.2);flex-wrap:wrap;gap:10px">
+<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#ffffff;color:#c0392b;padding:14px 16px;z-index:300;align-items:center;justify-content:space-between;box-shadow:0 -2px 12px rgba(192,57,43,.15);border-top:3px solid #c0392b;flex-wrap:wrap;gap:10px">
   <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
-    <img src="icons/icon-192.png" alt="FastBolt" style="width:44px;height:44px;border-radius:8px;flex-shrink:0">
+    <img src="icons/texas-outline.svg" alt="FastBolt" style="width:44px;height:44px;flex-shrink:0">
     <div style="min-width:0">
-      <div style="font-weight:700;font-size:15px">Install FastBolt</div>
-      <div style="font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Add to home screen — works offline!</div>
+      <div style="font-weight:700;font-size:15px;color:#c0392b">Install FastBolt</div>
+      <div style="font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Add to home screen — works offline!</div>
     </div>
   </div>
   <div style="display:flex;gap:8px;flex-shrink:0">
-    <button onclick="installApp()" style="background:#e67e22;color:#fff;border:none;padding:12px 20px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;min-height:44px">Install</button>
-    <button onclick="dismissInstall()" style="background:rgba(255,255,255,.15);color:#fff;border:none;padding:12px 14px;border-radius:6px;cursor:pointer;font-size:13px;min-height:44px">Not now</button>
+    <button onclick="installApp()" style="background:#c0392b;color:#fff;border:none;padding:12px 20px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;min-height:44px">Install</button>
+    <button onclick="dismissInstall()" style="background:rgba(192,57,43,.1);color:#c0392b;border:none;padding:12px 14px;border-radius:6px;cursor:pointer;font-size:13px;min-height:44px">Not now</button>
   </div>
 </div>
 
