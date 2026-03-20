@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fastbolt-v2';
+const CACHE_NAME = 'tgs-v3';
 const ASSETS = [
   './index.html',
   './manifest.json',

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FastBolt — Distributor Order System</title>
+<title>Texas General Supply — Fleet Maintenance & Industrial Supplies</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="FastBolt">
+<meta name="apple-mobile-web-app-title" content="TX General Supply">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -170,7 +170,7 @@ tr:hover { background: #fdecea; }
 <body>
 
 <div class="topbar">
-  <h1><img src="icons/texas-outline.svg" alt="Texas" class="topbar-logo"> Fast<span>Bolt</span></h1>
+  <h1><img src="icons/texas-outline.svg" alt="Texas" class="topbar-logo"> <span>General Supply</span></h1>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('scan')">📷 Scan</button>
     <button class="nav-tab" onclick="showPage('catalog')">📦 Catalog</button>
@@ -1023,7 +1023,7 @@ function exportCatalog() {
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'fastbolt-catalog.csv';
+  a.download = 'tgs-catalog.csv';
   a.click();
   toast('Catalog exported', 'success');
 }
@@ -1069,9 +1069,9 @@ init();
 <!-- PWA Install Banner -->
 <div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#ffffff;color:#c0392b;padding:14px 16px;z-index:300;align-items:center;justify-content:space-between;box-shadow:0 -2px 12px rgba(192,57,43,.15);border-top:3px solid #c0392b;flex-wrap:wrap;gap:10px">
   <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
-    <img src="icons/texas-outline.svg" alt="FastBolt" style="width:44px;height:44px;flex-shrink:0">
+    <img src="icons/texas-outline.svg" alt="Texas General Supply" style="width:44px;height:44px;flex-shrink:0">
     <div style="min-width:0">
-      <div style="font-weight:700;font-size:15px;color:#c0392b">Install FastBolt</div>
+      <div style="font-weight:700;font-size:15px;color:#c0392b">Install TX General Supply</div>
       <div style="font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Add to home screen — works offline!</div>
     </div>
   </div>

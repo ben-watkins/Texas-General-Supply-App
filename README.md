@@ -1,2 +1,2 @@
-# fastbolt-app
-app demo for nuts and bolts distributor 
+# Texas General Supply
+Fleet maintenance & industrial supplies distributor app

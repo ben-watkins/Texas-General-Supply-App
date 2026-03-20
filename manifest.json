@@ -1,7 +1,7 @@
 {
-  "name": "FastBolt — Distributor Order System",
-  "short_name": "FastBolt",
-  "description": "Nuts & bolts distributor app with bin scanning, quotes, invoices, and packing slips",
+  "name": "Texas General Supply — Fleet Maintenance & Industrial Supplies",
+  "short_name": "TX Gen Supply",
+  "description": "Fleet maintenance & industrial supplies distributor app with bin scanning, quotes, invoices, and packing slips",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
