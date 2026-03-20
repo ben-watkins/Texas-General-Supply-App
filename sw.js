@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tgs-v3';
+const CACHE_NAME = 'tgs-v4';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -7,7 +7,8 @@ const ASSETS = [
   './icons/texas-outline.svg',
   'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js'
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js',
+  'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'
 ];
 
 self.addEventListener('install', event => {

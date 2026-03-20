@@ -13,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root {
   --primary: #c0392b;
@@ -118,6 +119,32 @@ tr:hover { background: #fdecea; }
 .search-box { position: relative; margin-bottom: 16px; }
 .search-box input { padding-left: 36px; }
 .search-box::before { content: "🔍"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); }
+
+/* PRICE EDIT MODE */
+.price-edit-active { background: var(--primary) !important; color: #fff !important; border-color: var(--primary) !important; }
+.price-edit-input { width: 80px; padding: 6px 8px; font-size: 14px; font-weight: 700; text-align: right; border: 2px solid var(--primary); border-radius: 6px; }
+.catalog-item.price-mode { border-color: var(--primary); }
+.catalog-item.price-mode .add-bar { display: none; }
+
+/* CUSTOMER DROPDOWN */
+.cust-search-wrap { position: relative; margin-bottom: 12px; }
+.customer-dropdown { position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; border: 1.5px solid var(--border); background: #fff; z-index: 210; display: none; border-radius: 0 0 6px 6px; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+.customer-dropdown.show { display: block; }
+.customer-dropdown-item { padding: 10px 12px; cursor: pointer; font-size: 13px; border-bottom: 1px solid var(--border); }
+.customer-dropdown-item:hover { background: #fdecea; }
+.customer-dropdown-item .cd-company { font-weight: 700; }
+.customer-dropdown-item .cd-detail { font-size: 11px; color: var(--text-muted); }
+
+/* CATALOG ADD BAR */
+.catalog-item .add-bar { display: flex; gap: 4px; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.catalog-item .add-bar .qty-input { width: 50px; padding: 6px; font-size: 14px; }
+.catalog-item .in-cart { font-size: 11px; color: var(--primary); font-weight: 600; }
+
+/* MINI CART */
+.mini-cart { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); color: #fff; padding: 12px 20px; display: none; justify-content: space-between; align-items: center; z-index: 150; box-shadow: 0 -2px 8px rgba(0,0,0,.15); }
+.mini-cart.show { display: flex; }
+.mini-cart .mc-info { font-size: 14px; font-weight: 600; }
+.mini-cart .mc-btn { background: #fff; color: var(--primary); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
 /* CUSTOMER MODAL */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
@@ -240,7 +267,10 @@ tr:hover { background: #fdecea; }
 <!-- ==================== CATALOG PAGE ==================== -->
 <div id="page-catalog" class="page">
   <div class="card">
-    <h2>📦 Product Catalog</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <h2>📦 Product Catalog</h2>
+      <button class="btn btn-outline btn-sm" id="btn-price-mode" onclick="togglePriceMode()">💲 Price Update Mode</button>
+    </div>
     <div class="search-box">
       <input type="text" id="catalog-search" placeholder="  Search by part name, number, or bin..." oninput="renderCatalog()">
     </div>
@@ -315,6 +345,7 @@ tr:hover { background: #fdecea; }
           <button class="btn btn-accent" onclick="generateQuotePDF()">📧 Generate Quote PDF</button>
           <button class="btn btn-success" onclick="generateInvoicePDF()">🧾 Generate Invoice PDF</button>
           <button class="btn btn-primary" onclick="generatePackingSlipPDF()">📋 Generate Packing Slip PDF</button>
+          <button class="btn btn-outline" onclick="generateProtectedXLSX()">📊 Generate Excel Quote</button>
           <button class="btn btn-outline" onclick="emailQuote()">✉️ Email Quote to Customer</button>
         </div>
       </div>
@@ -396,6 +427,12 @@ tr:hover { background: #fdecea; }
   <div class="modal">
     <button class="modal-close" onclick="closeCustomerModal()">✕</button>
     <h2>👤 Customer Information</h2>
+    <div class="cust-search-wrap">
+      <label>Search Saved Customers</label>
+      <input type="text" id="cust-search" placeholder="Type company name to search..." oninput="filterCustomerDropdown()" onfocus="filterCustomerDropdown()" autocomplete="off">
+      <div class="customer-dropdown" id="cust-dropdown"></div>
+    </div>
+    <hr style="margin:0 0 12px;border:none;border-top:1px dashed var(--border)">
     <div class="form-row"><label>Company Name</label><input type="text" id="cust-company" placeholder="Acme Manufacturing"></div>
     <div class="grid-2">
       <div class="form-row"><label>Contact Name</label><input type="text" id="cust-contact" placeholder="John Smith"></div>
@@ -413,6 +450,12 @@ tr:hover { background: #fdecea; }
   </div>
 </div>
 
+<!-- MINI CART -->
+<div class="mini-cart" id="mini-cart">
+  <div class="mc-info"><span id="mc-count">0</span> item(s) · <span id="mc-total">$0.00</span></div>
+  <button class="mc-btn" onclick="document.querySelector('.nav-tab[onclick*=order]').click()">View Order</button>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -421,9 +464,12 @@ tr:hover { background: #fdecea; }
 let catalog = [];
 let currentOrder = { items: [], customer: {}, notes: '', shipping: 0 };
 let orderHistory = [];
+let customerDB = [];
 let scanner = null;
 let scannerRunning = false;
 let orderCounter = 1000;
+let texasLogoDataURL = null;
+let priceEditMode = false;
 
 const SAMPLE_CATALOG = [
   // Cable Ties
@@ -565,17 +611,36 @@ const SAMPLE_CATALOG = [
 
 function loadSampleCatalog() {
   catalog = JSON.parse(JSON.stringify(SAMPLE_CATALOG));
+  localStorage.removeItem('fb_catalog');
   renderCatalog();
-  toast('Catalog reset to sample data', 'success');
+  toast('Catalog reset to default data', 'success');
 }
 
 // ===================== INIT =====================
 function init() {
-  catalog = JSON.parse(JSON.stringify(SAMPLE_CATALOG));
+  const savedCatalog = localStorage.getItem('fb_catalog');
+  if (savedCatalog) {
+    try { catalog = JSON.parse(savedCatalog); } catch(e) { catalog = JSON.parse(JSON.stringify(SAMPLE_CATALOG)); }
+  } else {
+    catalog = JSON.parse(JSON.stringify(SAMPLE_CATALOG));
+  }
   const saved = localStorage.getItem('fb_history');
   if (saved) { try { orderHistory = JSON.parse(saved); } catch(e){} }
   const sc = localStorage.getItem('fb_counter');
   if (sc) orderCounter = parseInt(sc);
+  const savedCust = localStorage.getItem('fb_customers');
+  if (savedCust) { try { customerDB = JSON.parse(savedCust); } catch(e){} }
+  // Pre-render Texas SVG to PNG for PDF use
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200; canvas.height = 208;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, 200, 208);
+    texasLogoDataURL = canvas.toDataURL('image/png');
+  };
+  img.src = 'icons/texas-outline.svg';
+
   renderCatalog();
   renderHistory();
   updateOrderDisplay();
@@ -682,18 +747,64 @@ function renderCatalog() {
     !q || p.name.toLowerCase().includes(q) || p.partNo.toLowerCase().includes(q) ||
     p.bin.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
   );
-  document.getElementById('catalog-grid').innerHTML = filtered.map(p => `
-    <div class="catalog-item" onclick="addToOrder('${p.partNo}', 1)">
+  document.getElementById('catalog-grid').innerHTML = filtered.map(p => {
+    const inCart = currentOrder.items.find(i => i.partNo === p.partNo);
+    if (priceEditMode) {
+      return `
+      <div class="catalog-item price-mode">
+        <div class="part-no">${p.partNo}</div>
+        <div class="part-name">${p.name}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+          <label style="margin:0;font-size:11px">Price (${p.uom}):</label>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-weight:700;color:var(--text-muted)">$</span>
+            <input type="number" class="price-edit-input" value="${p.unitPrice}" min="0" step="0.01" id="pe-${p.partNo}" onchange="updatePrice('${p.partNo}',this.value)">
+          </div>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="catalog-item">
       <div class="part-no">${p.partNo}</div>
       <div class="part-name">${p.name}</div>
       <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">${p.description}</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span class="part-price">$${p.unitPrice.toFixed(2)}/${p.uom}</span>
-        <span class="part-bin">📍 ${p.bin}</span>
+        <span class="part-bin">${p.bin}</span>
       </div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">On hand: ${p.qtyOnHand.toLocaleString()}</div>
-    </div>
-  `).join('');
+      ${inCart ? '<div class="in-cart">In cart: ' + inCart.qty + '</div>' : ''}
+      <div class="add-bar">
+        <input type="number" class="qty-input" value="1" min="1" id="cq-${p.partNo}" onclick="event.stopPropagation()">
+        <button class="btn btn-success btn-sm" onclick="event.stopPropagation();addToOrder('${p.partNo}',parseInt(document.getElementById('cq-${p.partNo}').value)||1)">+ Add</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togglePriceMode() {
+  priceEditMode = !priceEditMode;
+  const btn = document.getElementById('btn-price-mode');
+  if (priceEditMode) {
+    btn.classList.add('price-edit-active');
+    btn.textContent = '✅ Done Editing Prices';
+  } else {
+    btn.classList.remove('price-edit-active');
+    btn.textContent = '💲 Price Update Mode';
+    saveCatalogToStorage();
+    toast('Prices saved', 'success');
+  }
+  renderCatalog();
+}
+
+function updatePrice(partNo, value) {
+  const price = parseFloat(value);
+  if (isNaN(price) || price < 0) return;
+  const item = catalog.find(p => p.partNo === partNo);
+  if (item) item.unitPrice = price;
+}
+
+function saveCatalogToStorage() {
+  localStorage.setItem('fb_catalog', JSON.stringify(catalog));
 }
 
 // ===================== ORDER MANAGEMENT =====================
@@ -716,9 +827,10 @@ function removeFromOrder(partNo) {
 }
 
 function updateQty(partNo, newQty) {
+  if (newQty < 1) { removeFromOrder(partNo); return; }
   const item = currentOrder.items.find(i => i.partNo === partNo);
   if (item) { item.qty = Math.max(1, parseInt(newQty) || 1); }
-  recalcOrder();
+  updateOrderDisplay();
 }
 
 function recalcOrder() {
@@ -758,6 +870,8 @@ function updateOrderDisplay() {
   `).join('');
   recalcOrder();
   updateQuickSummary();
+  updateMiniCart();
+  renderCatalog();
 }
 
 function updateQuickSummary() {
@@ -769,8 +883,27 @@ function updateQuickSummary() {
   const total = currentOrder.items.reduce((s, i) => s + i.unitPrice * i.qty, 0);
   el.innerHTML = `
     <div style="font-size:13px;margin-bottom:8px"><strong>${currentOrder.items.length}</strong> item(s) · <strong>$${total.toFixed(2)}</strong> subtotal</div>
-    ${currentOrder.items.map(i => `<div style="font-size:12px;color:var(--text-muted);padding:2px 0">${i.qty}x ${i.name}</div>`).join('')}
+    ${currentOrder.items.map(i => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;flex:1">${i.name}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <button class="btn btn-outline btn-sm" style="padding:2px 8px;min-width:28px" onclick="updateQty('${i.partNo}',${i.qty-1})">-</button>
+          <span style="min-width:24px;text-align:center;font-weight:700;font-size:13px">${i.qty}</span>
+          <button class="btn btn-outline btn-sm" style="padding:2px 8px;min-width:28px" onclick="updateQty('${i.partNo}',${i.qty+1})">+</button>
+          <button class="remove-btn" onclick="removeFromOrder('${i.partNo}')">✕</button>
+        </div>
+      </div>
+    `).join('')}
   `;
+}
+
+function updateMiniCart() {
+  const mc = document.getElementById('mini-cart');
+  if (!currentOrder.items.length) { mc.classList.remove('show'); return; }
+  const total = currentOrder.items.reduce((s, i) => s + i.unitPrice * i.qty, 0);
+  document.getElementById('mc-count').textContent = currentOrder.items.length;
+  document.getElementById('mc-total').textContent = '$' + total.toFixed(2);
+  mc.classList.add('show');
 }
 
 function clearOrder() {
@@ -781,8 +914,55 @@ function clearOrder() {
 }
 
 // ===================== CUSTOMER =====================
-function showCustomerModal() { document.getElementById('customer-modal').classList.add('show'); }
+function showCustomerModal() {
+  document.getElementById('cust-search').value = '';
+  document.getElementById('cust-dropdown').classList.remove('show');
+  document.getElementById('customer-modal').classList.add('show');
+}
 function closeCustomerModal() { document.getElementById('customer-modal').classList.remove('show'); }
+
+function filterCustomerDropdown() {
+  const q = document.getElementById('cust-search').value.trim().toLowerCase();
+  const dd = document.getElementById('cust-dropdown');
+  const matches = customerDB.filter(c =>
+    c.company.toLowerCase().includes(q) || (c.contact||'').toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q)
+  );
+  if (!matches.length) { dd.classList.remove('show'); return; }
+  dd.innerHTML = matches.slice(0, 10).map((c, i) => `
+    <div class="customer-dropdown-item" onclick="selectCustomer(${i}, '${q}')">
+      <div class="cd-company">${c.company}</div>
+      <div class="cd-detail">${c.contact || ''} ${c.phone ? '· ' + c.phone : ''} ${c.email ? '· ' + c.email : ''}</div>
+    </div>
+  `).join('');
+  dd.classList.add('show');
+}
+
+function selectCustomer(idx, q) {
+  const matches = customerDB.filter(c =>
+    c.company.toLowerCase().includes(q) || (c.contact||'').toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q)
+  );
+  const c = matches[idx];
+  if (!c) return;
+  document.getElementById('cust-company').value = c.company || '';
+  document.getElementById('cust-contact').value = c.contact || '';
+  document.getElementById('cust-email').value = c.email || '';
+  document.getElementById('cust-phone').value = c.phone || '';
+  document.getElementById('cust-po').value = '';
+  document.getElementById('cust-address').value = c.address || '';
+  document.getElementById('cust-dropdown').classList.remove('show');
+  document.getElementById('cust-search').value = '';
+  toast('Customer loaded: ' + c.company, 'success');
+}
+
+function saveCustomerToDB(custObj) {
+  const existing = customerDB.findIndex(c => c.company.toLowerCase() === custObj.company.toLowerCase());
+  if (existing >= 0) {
+    customerDB[existing] = { ...customerDB[existing], ...custObj };
+  } else {
+    customerDB.push({ ...custObj, id: Date.now() });
+  }
+  localStorage.setItem('fb_customers', JSON.stringify(customerDB));
+}
 
 function saveCustomer() {
   currentOrder.customer = {
@@ -794,6 +974,7 @@ function saveCustomer() {
     address: document.getElementById('cust-address').value,
   };
   const c = currentOrder.customer;
+  if (c.company) saveCustomerToDB({ company: c.company, contact: c.contact, email: c.email, phone: c.phone, address: c.address });
   document.getElementById('customer-display').innerHTML = `
     <div style="font-weight:700">${c.company || 'No company'}</div>
     <div style="font-size:13px">${c.contact || ''} ${c.phone ? '· ' + c.phone : ''}</div>
@@ -825,50 +1006,104 @@ function generateDocNumber(prefix) {
 }
 
 function pdfHeader(doc, s, title, docNumber, date) {
-  doc.setFillColor(26, 82, 118);
-  doc.rect(0, 0, 220, 36, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20);
+  // White background — red text branding
+  doc.setTextColor(192, 57, 43);
+  doc.setFontSize(8);
   doc.setFont(undefined, 'bold');
-  doc.text(s.company, 14, 16);
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'normal');
-  doc.text(s.address, 14, 24);
-  doc.text(`${s.phone}  |  ${s.email}  |  ${s.website}`, 14, 30);
+  doc.text('"FLEET MAINTENANCE & INDUSTRIAL SUPPLIES"', 105, 8, { align: 'center' });
+
+  // Texas logo image
+  if (texasLogoDataURL) {
+    doc.addImage(texasLogoDataURL, 'PNG', 14, 10, 24, 25);
+  }
+
+  // Company name in red
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'italic');
+  doc.text('Texas', 40, 21);
+  doc.setFont(undefined, 'bold');
   doc.setFontSize(24);
-  doc.setFont(undefined, 'bold');
-  doc.text(title, 196, 16, { align: 'right' });
-  doc.setFontSize(10);
+  doc.text('General', 58, 23);
+  doc.text('Supply', 58, 34);
+
+  // Document title on right side
+  doc.setFontSize(16);
+  doc.text(title, 196, 27, { align: 'right' });
+
+  // Red lines above and below address
+  doc.setDrawColor(192, 57, 43);
+  doc.setLineWidth(1);
+  doc.line(10, 38, 200, 38);
+  doc.setFontSize(7);
   doc.setFont(undefined, 'normal');
-  doc.text(`${docNumber}`, 196, 24, { align: 'right' });
-  doc.text(`Date: ${date}`, 196, 30, { align: 'right' });
+  doc.text(s.address + ' - ' + s.phone, 105, 43, { align: 'center' });
+  doc.line(10, 45, 200, 45);
+
+  // Date and doc number below
+  doc.setFontSize(9);
+  doc.text('Date: ' + date, 14, 52);
+  doc.text(docNumber, 196, 52, { align: 'right' });
+
   doc.setTextColor(0, 0, 0);
-  return 44;
+  doc.setDrawColor(0, 0, 0);
+  doc.setLineWidth(0.2);
+  return 58;
 }
 
 function pdfCustomerBlock(doc, c, y, s) {
-  doc.setFontSize(10);
+  doc.setDrawColor(192, 57, 43);
+  doc.setLineWidth(0.3);
+
+  // Bill To label
+  doc.setTextColor(192, 57, 43);
+  doc.setFontSize(9);
   doc.setFont(undefined, 'bold');
-  doc.text('Bill To:', 14, y);
+  doc.text('Bill To', 14, y);
+  doc.rect(14, y + 1, 88, 22);
+
+  // Ship To label
+  doc.text('Ship To', 108, y);
+  doc.rect(108, y + 1, 88, 22);
+
+  doc.setTextColor(0, 0, 0);
   doc.setFont(undefined, 'normal');
   doc.setFontSize(9);
-  let cy = y + 6;
-  if (c.company) { doc.text(c.company, 14, cy); cy += 4.5; }
-  if (c.contact) { doc.text(c.contact, 14, cy); cy += 4.5; }
-  if (c.address) { doc.text(c.address, 14, cy); cy += 4.5; }
-  if (c.phone) { doc.text(c.phone, 14, cy); cy += 4.5; }
-  if (c.email) { doc.text(c.email, 14, cy); cy += 4.5; }
-  if (c.po) {
-    doc.setFont(undefined, 'bold');
-    doc.text('Ship To:', 110, y);
-    doc.setFont(undefined, 'normal');
-    doc.text(c.address || 'Same as billing', 110, y + 6);
-    doc.text('PO #: ' + c.po, 110, y + 11);
-  }
+  let cy = y + 7;
+  if (c.company) { doc.text(c.company, 16, cy); doc.text(c.company, 110, cy); cy += 4.5; }
+  if (c.contact) { doc.text(c.contact, 16, cy); cy += 4.5; }
+  if (c.address) { doc.text(c.address, 16, cy); doc.text(c.address, 110, cy); cy += 4.5; }
+  if (c.phone) { doc.text(c.phone, 16, cy); cy += 4.5; }
+
+  cy = y + 28;
+
+  // Info row with borders
+  doc.setDrawColor(192, 57, 43);
+  const cols = [14, 55, 95, 130, 165];
+  const cw = [41, 40, 35, 35, 31];
+  const labels = ['P.O. No.', 'Terms', 'Rep', 'Account #'];
+  const vals = [c.po || '-', s.terms, 'SE', '-'];
+
+  // Header row
+  doc.setTextColor(192, 57, 43);
+  doc.setFontSize(7);
   doc.setFont(undefined, 'bold');
-  doc.text('Terms: ' + s.terms, 110, y + 20);
+  for (let i = 0; i < 4; i++) {
+    doc.rect(cols[i], cy, cw[i], 5);
+    doc.text(labels[i], cols[i] + 2, cy + 3.5);
+  }
+  cy += 5;
+  // Values row
+  doc.setTextColor(0, 0, 0);
   doc.setFont(undefined, 'normal');
-  return Math.max(cy, y + 28);
+  doc.setFontSize(9);
+  for (let i = 0; i < 4; i++) {
+    doc.rect(cols[i], cy, cw[i], 6);
+    doc.text(vals[i], cols[i] + 2, cy + 4.5);
+  }
+  cy += 10;
+
+  doc.setLineWidth(0.2);
+  return cy;
 }
 
 function pdfItemsTable(doc, items, y, showPrice) {
@@ -884,7 +1119,7 @@ function pdfItemsTable(doc, items, y, showPrice) {
     head,
     body,
     theme: 'grid',
-    headStyles: { fillColor: [26, 82, 118], fontSize: 8, halign: 'center' },
+    headStyles: { fillColor: [192, 57, 43], fontSize: 8, halign: 'center' },
     bodyStyles: { fontSize: 8 },
     columnStyles: showPrice ? {
       0: { halign: 'center', cellWidth: 10 },
@@ -906,24 +1141,54 @@ function pdfTotals(doc, items, y, s) {
   const tax = subtotal * (s.taxRate / 100);
   const shipping = currentOrder.shipping || 0;
   const total = subtotal + tax + shipping;
-  const x = 145;
+  const lx = 145; const vx = 196;
   y += 6;
-  doc.setFontSize(9);
-  doc.text('Subtotal:', x, y); doc.text('$' + subtotal.toFixed(2), 196, y, { align: 'right' }); y += 5;
-  doc.text(`Tax (${s.taxRate}%):`, x, y); doc.text('$' + tax.toFixed(2), 196, y, { align: 'right' }); y += 5;
-  doc.text('Shipping:', x, y); doc.text('$' + shipping.toFixed(2), 196, y, { align: 'right' }); y += 2;
-  doc.setDrawColor(26, 82, 118); doc.line(x, y, 196, y); y += 5;
-  doc.setFontSize(12); doc.setFont(undefined, 'bold');
-  doc.text('TOTAL:', x, y); doc.text('$' + total.toFixed(2), 196, y, { align: 'right' });
+
+  // Draw bordered rows on white background
+  doc.setDrawColor(192, 57, 43);
+  doc.setLineWidth(0.3);
+
+  // Subtotal
+  doc.rect(lx - 2, y - 4, 53, 7);
+  doc.setTextColor(192, 57, 43);
+  doc.setFontSize(9); doc.setFont(undefined, 'bold');
+  doc.text('Subtotal', lx, y);
+  doc.setTextColor(0, 0, 0); doc.setFont(undefined, 'normal');
+  doc.text('$' + subtotal.toFixed(2), vx, y, { align: 'right' });
+  y += 8;
+
+  // Tax
+  doc.rect(lx - 2, y - 4, 53, 7);
+  doc.setTextColor(192, 57, 43); doc.setFont(undefined, 'bold');
+  doc.text('Sales Tax (' + s.taxRate + '%)', lx, y);
+  doc.setTextColor(0, 0, 0); doc.setFont(undefined, 'normal');
+  doc.text('$' + tax.toFixed(2), vx, y, { align: 'right' });
+  y += 8;
+
+  // Balance Due
+  doc.rect(lx - 2, y - 4, 53, 8);
+  doc.setTextColor(192, 57, 43); doc.setFont(undefined, 'bold');
+  doc.setFontSize(11);
+  doc.text('Balance Due', lx, y + 1);
+  doc.setFontSize(12);
+  doc.text('$' + total.toFixed(2), vx, y + 1, { align: 'right' });
+
   doc.setFont(undefined, 'normal');
-  return y + 8;
+  doc.setTextColor(0, 0, 0);
+  doc.setLineWidth(0.2);
+  return y + 12;
 }
 
 function pdfFooter(doc, note) {
   const pageHeight = doc.internal.pageSize.height;
+  doc.setFontSize(9);
+  doc.setTextColor(192, 57, 43);
+  doc.setFont(undefined, 'bold');
+  doc.text('Thank you for your business!', 105, pageHeight - 16, { align: 'center' });
   doc.setFontSize(7);
+  doc.setFont(undefined, 'normal');
   doc.setTextColor(128, 128, 128);
-  doc.text(note || 'Thank you for your business!', 105, pageHeight - 10, { align: 'center' });
+  doc.text(note || '', 105, pageHeight - 10, { align: 'center' });
   doc.setTextColor(0, 0, 0);
 }
 
@@ -1021,6 +1286,57 @@ function emailQuote() {
   );
   window.open(`mailto:${c.email || ''}?subject=${subject}&body=${body}`);
   toast('Email client opened', 'success');
+}
+
+// ===================== EXCEL GENERATION =====================
+function generateProtectedXLSX() {
+  if (!currentOrder.items.length) { toast('Add items first', 'error'); return; }
+  const s = getSettings();
+  const num = generateDocNumber(s.qPrefix);
+  const date = new Date().toLocaleDateString();
+  const c = currentOrder.customer;
+  const wsData = [];
+
+  wsData.push([s.company]);
+  wsData.push([s.address]);
+  wsData.push([s.phone + '  |  ' + s.email]);
+  wsData.push([]);
+  wsData.push(['QUOTE', '', '', '', '', num]);
+  wsData.push(['Date:', date, '', 'Terms:', s.terms]);
+  wsData.push([]);
+  wsData.push(['Bill To:']);
+  if (c.company) wsData.push([c.company]);
+  if (c.contact) wsData.push([c.contact]);
+  if (c.address) wsData.push([c.address]);
+  if (c.phone) wsData.push([c.phone]);
+  if (c.po) wsData.push(['PO #: ' + c.po]);
+  wsData.push([]);
+
+  wsData.push(['#', 'Part No.', 'Description', 'Bin', 'Qty', 'Unit Price', 'Amount']);
+  currentOrder.items.forEach((item, i) => {
+    wsData.push([i + 1, item.partNo, item.name, item.bin, item.qty, item.unitPrice, item.unitPrice * item.qty]);
+  });
+
+  const subtotal = currentOrder.items.reduce((sum, i) => sum + i.unitPrice * i.qty, 0);
+  const tax = subtotal * (s.taxRate / 100);
+  const shipping = currentOrder.shipping || 0;
+  const total = subtotal + tax + shipping;
+  wsData.push([]);
+  wsData.push(['', '', '', '', '', 'Subtotal:', subtotal]);
+  wsData.push(['', '', '', '', '', 'Tax (' + s.taxRate + '%):', tax]);
+  wsData.push(['', '', '', '', '', 'Shipping:', shipping]);
+  wsData.push(['', '', '', '', '', 'TOTAL:', total]);
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols'] = [{ wch: 5 }, { wch: 20 }, { wch: 35 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 14 }];
+
+  // Protect sheet to prevent editing
+  ws['!protect'] = { password: 'TGS2024', sheet: true, objects: true, scenarios: true };
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Quote');
+  XLSX.writeFile(wb, num + '.xlsx');
+  toast('Excel quote ' + num + ' downloaded', 'success');
 }
 
 // ===================== ORDER SAVE / HISTORY =====================
@@ -1182,6 +1498,10 @@ if ('serviceWorker' in navigator) {
 }
 
 // ===================== BOOT =====================
+document.addEventListener('click', e => {
+  const dd = document.getElementById('cust-dropdown');
+  if (dd && !e.target.closest('.cust-search-wrap')) dd.classList.remove('show');
+});
 init();
 </script>
 
